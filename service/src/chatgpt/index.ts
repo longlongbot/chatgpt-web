@@ -72,7 +72,7 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
     const OPENAI_API_MODEL = process.env.OPENAI_API_MODEL
     const options: ChatGPTUnofficialProxyAPIOptions = {
       accessToken: process.env.OPENAI_ACCESS_TOKEN,
-      debug: true,
+      debug: false,
     }
     if (isNotEmptyString(OPENAI_API_MODEL))
       options.model = OPENAI_API_MODEL
@@ -88,7 +88,7 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
 })()
 
 async function chatReplyProcess(options: RequestOptions) {
-  const { message, lastContext, process, systemMessage } = options
+  const { message, lastContext, process, systemMessage，ip } = options
   try {
     let options: SendMessageOptions = { timeoutMs }
 
@@ -111,7 +111,7 @@ async function chatReplyProcess(options: RequestOptions) {
       },
     })
 
-		globalThis.console.log(`${options.ip||'未知的朋友'} 问：${message}`)
+		globalThis.console.log(`${ip||'未知的朋友'} 问：${message}`)
 		globalThis.console.log(`答：${response.text}`)
     return sendResponse({ type: 'Success', data: response })
   }
