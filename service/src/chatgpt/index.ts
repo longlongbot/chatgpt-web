@@ -111,11 +111,13 @@ async function chatReplyProcess(options: RequestOptions) {
       },
     })
 
+		global.console.log(`${RequestOptions.ip||'未知的朋友'} 问：${message}`)
+		global.console.log(`答：${response.text}`)
     return sendResponse({ type: 'Success', data: response })
   }
   catch (error: any) {
     const code = error.statusCode
-    global.console.log(error)
+    //global.console.log(error)
     if (Reflect.has(ErrorCodeMessage, code))
       return sendResponse({ type: 'Fail', message: ErrorCodeMessage[code] })
     return sendResponse({ type: 'Fail', message: error.message ?? 'Please check the back-end console' })
