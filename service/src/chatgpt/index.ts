@@ -111,8 +111,8 @@ async function chatReplyProcess(options: RequestOptions) {
       },
     })
 
-		global.console.log(`${RequestOptions.ip||'未知的朋友'} 问：${message}`)
-		global.console.log(`答：${response.text}`)
+		globalThis.console.log(`${options.ip||'未知的朋友'} 问：${message}`)
+		globalThis.console.log(`答：${response.text}`)
     return sendResponse({ type: 'Success', data: response })
   }
   catch (error: any) {
