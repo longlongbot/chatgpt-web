@@ -18,6 +18,11 @@ const routes: RouteRecordRaw[] = [
       },
     ],
   },
+  {
+    path: '/zen',
+    name: 'Zen',
+    component: () => import('@/views/zen/index.vue'),
+  },
 
   {
     path: '/404',
