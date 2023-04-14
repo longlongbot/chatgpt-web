@@ -35,6 +35,16 @@ export const useChatStore = defineStore('chat-store', {
       this.reloadRoute(history.uuid)
     },
 
+    findAndAddHistoryButNotReload(history: Chat.History, chatData: Chat.Chat[] = []) {
+      const index = this.history.findIndex(item => item.uuid === history.uuid)
+      if( index === -1){
+        this.history.unshift(history)
+        this.chat.unshift({ uuid: history.uuid, data: chatData })
+      }
+      this.active = history.uuid
+      return this.history[index]
+    },
+
     updateHistory(uuid: number, edit: Partial<Chat.History>) {
       const index = this.history.findIndex(item => item.uuid === uuid)
       if (index !== -1) {

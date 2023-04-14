@@ -31,7 +31,13 @@ const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex } = useChat()
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const { usingContext } = useUsingContext()
 
-const { uuid } = route.params as { uuid: string }
+let { uuid } = route.params as { uuid: string }
+
+
+if(!uuid){
+  uuid = '1024'
+  chatStore.findAndAddHistoryButNotReload({ title: '赛博禅宗问青年', uuid: +uuid, isEdit: false })
+}
 
 const dataSources = computed(() => chatStore.getChatByUuid(+uuid))
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !item.error)))
@@ -58,8 +64,8 @@ function handleSubmit() {
 
 function wrapSystemTip(message: string){
   return `
-  假设你扮演一位禅宗。无论我问你什么问题，你的答案都必须是非常简短的、精炼的、质朴的、比喻的、禅宗风格，
-  你的开头都必须是禅宗说, 尽可能使用禅宗公案。我的问题是"${message}。禅宗如何看待？"。
+  假设你扮演一位禅宗。无论我问你什么问题，你的答案都必须是简短的、简单的、精炼的、质朴的、比喻的、故事性的、禅宗风格、高深莫测的、人生哲理的、优美语言的、有禅的意境的，
+  你的开头都必须是【禅宗说】，尽可能使用《禅宗公案大全》的内容，尽可能的出现禅宗的专业名词。我的问题是"${message}。禅宗如何看待？"。
   如果你觉得我的问题是对禅宗的调侃，那你可以幽默的回答或者拒绝。
   `
 }
@@ -400,9 +406,7 @@ const renderOption = (option: { label: string }) => {
 }
 
 const placeholder = computed(() => {
-  if (isMobile.value)
-    return t('chat.placeholderMobile')
-  return t('chat.placeholder')
+  return "诉说你的苦恼，追寻人生的意义"
 })
 
 const buttonDisabled = computed(() => {
@@ -439,7 +443,7 @@ onUnmounted(() => {
       </h2>
     </div>
     <div class="clear-right"></div>
-    <main class="flex-1 overflow-hidden">
+    <main class="overflow-hidden">
       <div
         id="scrollRef"
         ref="scrollRef"
