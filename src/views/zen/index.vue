@@ -3,8 +3,7 @@ import type { Ref } from 'vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
-import { NAutoComplete, NButton, NInput, useDialog, useMessage } from 'naive-ui'
-import html2canvas from 'html2canvas'
+import { NAutoComplete, NButton, NInput, useDialog } from 'naive-ui'
 import Message from './Message/index.vue'
 import { useScroll } from '../chat/hooks/useScroll'
 import { useChat } from '../chat/hooks/useChat'
@@ -22,7 +21,6 @@ const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
 
 const route = useRoute()
 const dialog = useDialog()
-const ms = useMessage()
 
 const chatStore = useChatStore()
 
@@ -31,7 +29,7 @@ useCopyCode()
 const { isMobile } = useBasicLayout()
 const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex } = useChat()
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
-const { usingContext, toggleUsingContext } = useUsingContext()
+const { usingContext } = useUsingContext()
 
 const { uuid } = route.params as { uuid: string }
 
@@ -58,7 +56,7 @@ function handleSubmit() {
   onConversation()
 }
 
-function wrapSystemTip(message){
+function wrapSystemTip(message: string){
   return `
   假设你扮演一位禅宗。无论我问你什么问题，你的答案都必须是非常简短的、精炼的、质朴的、比喻的、禅宗风格，
   你的开头都必须是禅宗说, 尽可能使用禅宗公案。我的问题是"${message}。禅宗如何看待？"。
@@ -322,47 +320,6 @@ async function onRegenerate(index: number) {
   }
 }
 
-function handleExport() {
-  if (loading.value)
-    return
-
-  const d = dialog.warning({
-    title: t('chat.exportImage'),
-    content: t('chat.exportImageConfirm'),
-    positiveText: t('common.yes'),
-    negativeText: t('common.no'),
-    onPositiveClick: async () => {
-      try {
-        d.loading = true
-        const ele = document.getElementById('image-wrapper')
-        const canvas = await html2canvas(ele as HTMLDivElement, {
-          useCORS: true,
-        })
-        const imgUrl = canvas.toDataURL('image/png')
-        const tempLink = document.createElement('a')
-        tempLink.style.display = 'none'
-        tempLink.href = imgUrl
-        tempLink.setAttribute('download', 'chat-shot.png')
-        if (typeof tempLink.download === 'undefined')
-          tempLink.setAttribute('target', '_blank')
-
-        document.body.appendChild(tempLink)
-        tempLink.click()
-        document.body.removeChild(tempLink)
-        window.URL.revokeObjectURL(imgUrl)
-        d.loading = false
-        ms.success(t('chat.exportSuccess'))
-        Promise.resolve()
-      }
-      catch (error: any) {
-        ms.error(t('chat.exportFailed'))
-      }
-      finally {
-        d.loading = false
-      }
-    },
-  })
-}
 
 function handleDelete(index: number) {
   if (loading.value)
