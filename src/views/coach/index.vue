@@ -38,7 +38,7 @@ if (!uuid) {
   chatStore.findAndAddHistoryButNotReload({ title: '认知行为型教练', uuid: +uuid, isEdit: false })
 }
 
-const firstAsk = true
+let firstAsk = true
 
 const dataSources = computed(() => chatStore.getChatByUuid(+uuid))
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !item.error)))
