@@ -409,7 +409,7 @@ const renderOption = (option: { label: string }) => {
 }
 
 const placeholder = computed(() => {
-  return '我是个认知行为型教练，旨在帮助你识别和改变负面的自我对话和信念'
+  return '问一个问题'
 })
 
 const buttonDisabled = computed(() => {
@@ -439,8 +439,8 @@ onUnmounted(() => {
   <div class="flex flex-col max-w-2xl mx-auto h-full bg-gray-50">
     <div class="p-5 bg-gray-100">
       <h2 class="float-left m-5">
-        <span class="text-2xl font-extrabold mr-1">认知行为型教练，</span>
-        <span class="text-2xl text-transparent font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 via-brown-500 to-brown-600">为您解惑</span>
+        <span class="text-2xl font-extrabold mr-1">赛博教练，</span>
+        <span class="text-2xl text-transparent font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 via-brown-500 to-brown-600">为您指路</span>
       </h2>
     </div>
     <div class="clear-right" />
