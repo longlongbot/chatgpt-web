@@ -28,7 +28,11 @@ const routes: RouteRecordRaw[] = [
     name: 'Drone',
     component: () => import('@/views/drone/index.vue'),
   },
-
+	{
+		path: '/coach',
+		name: 'Coach',
+		component: () => import('@/views/coach/index.vue'),
+	},
   {
     path: '/404',
     name: '404',
