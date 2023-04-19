@@ -34,7 +34,7 @@ const { usingContext } = useUsingContext()
 let { uuid } = route.params as { uuid: string }
 
 if (!uuid) {
-  uuid = '1025'
+  uuid = '1029'
   chatStore.findAndAddHistoryButNotReload({ title: '认知行为型教练', uuid: +uuid, isEdit: false })
 }
 
