@@ -4,11 +4,11 @@ import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { NAutoComplete, NButton, NInput, useDialog } from 'naive-ui'
-import Message from './Message/index.vue'
 import { useScroll } from '../chat/hooks/useScroll'
 import { useChat } from '../chat/hooks/useChat'
 import { useCopyCode } from '../chat/hooks/useCopyCode'
 import { useUsingContext } from '../chat/hooks/useUsingContext'
+import Message from './Message/index.vue'
 import { HoverButton, SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
@@ -33,8 +33,7 @@ const { usingContext } = useUsingContext()
 
 let { uuid } = route.params as { uuid: string }
 
-
-if(!uuid){
+if (!uuid) {
   uuid = '1025'
   chatStore.findAndAddHistoryButNotReload({ title: '认知行为型教练', uuid: +uuid, isEdit: false })
 }
@@ -62,9 +61,11 @@ function handleSubmit() {
   onConversation()
 }
 
-function wrapSystemTip(message: string){
-	return `
-	假设你是一个非常专业的认知型教练，能帮助客户识别个人的潜意识诉求并且能在工作或者生活中做出积极的改变。你的回答必须是通过问题来让我进一步挖掘自己内容真正的想法、不可以直接给我答案或者是建议、不需要解释为何要探讨这些问题。假设我现在是你的客户，我的问题是"${message}"。
+function wrapSystemTip(message: string) {
+  return `
+	假设你扮演一位辅导经验十分丰富的认知型教练。
+  无论我问你什么问题，你的答案都必须是通过一个简短的问题来让我进一步挖掘自己内容真正的想法、不可以直接给我答案或者是建议、不需要解释为何要探讨这些问题。
+  我的问题是"${message}"。
 	`
 }
 
@@ -324,7 +325,6 @@ async function onRegenerate(index: number) {
   }
 }
 
-
 function handleDelete(index: number) {
   if (loading.value)
     return
@@ -404,7 +404,7 @@ const renderOption = (option: { label: string }) => {
 }
 
 const placeholder = computed(() => {
-  return "我是个认知行为型教练，旨在帮助你识别和改变负面的自我对话和信念"
+  return '我是个认知行为型教练，旨在帮助你识别和改变负面的自我对话和信念'
 })
 
 const buttonDisabled = computed(() => {
@@ -438,7 +438,7 @@ onUnmounted(() => {
         <span class="text-2xl text-transparent font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 via-brown-500 to-brown-600">为您解惑</span>
       </h2>
     </div>
-    <div class="clear-right"></div>
+    <div class="clear-right" />
     <main class="overflow-hidden">
       <div
         id="scrollRef"
@@ -449,35 +449,33 @@ onUnmounted(() => {
           id="image-wrapper"
           class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
         >
-
-            <div>
-              <Message
-                v-for="(item, index) of dataSources"
-                :key="index"
-                :date-time="item.dateTime"
-                :text="item.text"
-                :inversion="item.inversion"
-                :error="item.error"
-                :loading="item.loading"
-                @regenerate="onRegenerate(index)"
-                @delete="handleDelete(index)"
-              />
-              <div class="sticky bottom-0 left-0 flex justify-center">
-                <NButton v-if="false" type="warning" @click="handleStop">
-                  <template #icon>
-                    <SvgIcon icon="ri:stop-circle-line" />
-                  </template>
-                  Stop Responding
-                </NButton>
-              </div>
+          <div>
+            <Message
+              v-for="(item, index) of dataSources"
+              :key="index"
+              :date-time="item.dateTime"
+              :text="item.text"
+              :inversion="item.inversion"
+              :error="item.error"
+              :loading="item.loading"
+              @regenerate="onRegenerate(index)"
+              @delete="handleDelete(index)"
+            />
+            <div class="sticky bottom-0 left-0 flex justify-center">
+              <NButton v-if="false" type="warning" @click="handleStop">
+                <template #icon>
+                  <SvgIcon icon="ri:stop-circle-line" />
+                </template>
+                Stop Responding
+              </NButton>
             </div>
-
+          </div>
         </div>
       </div>
     </main>
     <footer :class="footerClass">
       <div class="w-full max-w-screen-xl m-auto">
-        <div class="flex items-center justify-between space-x-2" v-if="!loading">
+        <div v-if="!loading" class="flex items-center justify-between space-x-2">
           <HoverButton @click="handleClear">
             <span class="text-xl text-[#4f555e] dark:text-white">
               <SvgIcon icon="ri:delete-bin-line" />
