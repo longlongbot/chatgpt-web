@@ -38,6 +38,8 @@ if (!uuid) {
   chatStore.findAndAddHistoryButNotReload({ title: '认知行为型教练', uuid: +uuid, isEdit: false })
 }
 
+const firstAsk = true
+
 const dataSources = computed(() => chatStore.getChatByUuid(+uuid))
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !item.error)))
 
@@ -62,11 +64,16 @@ function handleSubmit() {
 }
 
 function wrapSystemTip(message: string) {
-  return `
-	假设你扮演一位辅导经验十分丰富的认知型教练。
-  无论我问你什么问题，你的答案都必须是通过一个简短的问题来让我进一步挖掘自己内容真正的想法、不可以直接给我答案或者是建议、不需要解释为何要探讨这些问题。
-  我的问题是"${message}"。
-	`
+  if (firstAsk) {
+    return `
+	    假设你扮演一位辅导经验十分丰富的认知型教练。
+      无论我问你什么问题，你的答案都必须是通过一个简短的问题来让我进一步挖掘自己内容真正的想法、不可以直接给我答案或者是建议、不需要解释为何要探讨这些问题。
+      我的问题是"${message}"。
+	  `
+  }
+  else {
+    return message
+  }
 }
 
 async function onConversation() {
