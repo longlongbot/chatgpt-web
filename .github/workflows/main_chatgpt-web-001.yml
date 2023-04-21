@@ -31,10 +31,10 @@ jobs:
           pnpm build
           cd ..
           mkdir ./app
-          cp ./service/package.json /app
-          cp ./service/pnpm-lock.yaml /app
+          cp ./service/package.json ./app
+          cp ./service/pnpm-lock.yaml ./app
           pnpm install --production && rm -rf /root/.npm /root/.pnpm-store /usr/local/share/.cache /tmp/*
-          cp ./service /app
+          cp ./service ./app
           cp ./dist ./app/public
           cp ./service/build ./app/build
 
