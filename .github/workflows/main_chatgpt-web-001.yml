@@ -31,12 +31,14 @@ jobs:
           pnpm build
           cd ..
           mkdir ./app
+          mkdir ./app/public
+          mkdir ./app/build
           cp ./service/package.json ./app
           cp ./service/pnpm-lock.yaml ./app
           pnpm install --production
-          cp ./service ./app
-          cp ./dist ./app/public
-          cp ./service/build ./app/build
+          cp -r ./service/* ./app
+          cp -r ./dist/* ./app/public
+          cp -r ./service/build/* ./app/build
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
