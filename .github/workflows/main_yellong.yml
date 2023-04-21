@@ -21,8 +21,9 @@ jobs:
           node-version: 18.x
 
       - name: build with dockerfile
-        useing: docker
-        image: dockerfile
+        runs:
+          useing: docker
+          image: dockerfile
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
