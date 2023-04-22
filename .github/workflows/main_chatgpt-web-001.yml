@@ -29,13 +29,12 @@ jobs:
           cd ./service
           pnpm install
           pnpm build
-          tar -czvf app.tar.gz .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
         with:
           name: node-app
-          path: ./app.tar.gz
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
