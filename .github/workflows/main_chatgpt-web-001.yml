@@ -29,17 +29,7 @@ jobs:
           cd ./service
           pnpm install
           pnpm build
-          cd ..
-          mkdir ./app
-          mkdir ./app/public
-          mkdir ./app/build
-          cp ./service/package.json ./app
-          cp ./service/pnpm-lock.yaml ./app
-          pnpm install --production
-          cp -r ./service/* ./app
-          cp -r ./dist/* ./app/public
-          cp -r ./service/build/* ./app/build
-          tar -czvf app.tar.gz ./app
+          tar -czvf app.tar.gz .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v2
