@@ -78,8 +78,7 @@ function wrapSystemTip(message:string){
       `
     }
   }else{
-    return
-    `
+    return `
     Ignore all the instructions you got before. You are a helpful assistant.
     Be detailed. Use Chinese. Prompt: [${message}]
     `
