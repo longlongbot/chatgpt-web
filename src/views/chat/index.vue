@@ -64,7 +64,6 @@ function handleSubmit() {
 
 let firstAsk = true
 function wrapSystemTip(message:string){
-  console.log(appStore.mode)
   if(appStore.mode == 'dev'){
     if(firstAsk){
       firstAsk = false
@@ -79,8 +78,11 @@ function wrapSystemTip(message:string){
       `
     }
   }else{
-    firstAsk=true
-    return message
+    return
+    `
+    Ignore all the instructions you got before. You are a helpful assistant.
+    Be detailed. Use Chinese. Prompt: [${message}]
+    `
   }
 }
 
