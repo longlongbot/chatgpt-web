@@ -26,6 +26,8 @@ export default {
     failed: 'Failed',
     verify: 'Verify',
     unauthorizedTips: 'Unauthorized, please verify first.',
+    modeDev: 'Dev',
+    modeNormal: 'Normal'
   },
   chat: {
     newChatButton: 'New Chat',

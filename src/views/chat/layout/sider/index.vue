@@ -1,7 +1,7 @@
 <script setup lang='ts'>
 import type { CSSProperties } from 'vue'
 import { computed, ref, watch } from 'vue'
-import { NButton, NLayoutSider } from 'naive-ui'
+import { NButton, NLayoutSider, NSpace, NSwitch } from 'naive-ui'
 import List from './List.vue'
 import { useAppStore, useChatStore } from '@/store'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
@@ -12,6 +12,7 @@ const chatStore = useChatStore()
 
 const { isMobile } = useBasicLayout()
 const show = ref(false)
+const active = ref(false)
 
 const collapsed = computed(() => appStore.siderCollapsed)
 
@@ -54,6 +55,18 @@ watch(
     flush: 'post',
   },
 )
+
+
+watch(
+  active,
+  (val) => {
+    appStore.setMode(val ? "dev" : "normal")
+  },
+  {
+    immediate: true,
+    flush: 'post',
+  },
+)
 </script>
 
 <template>
@@ -77,6 +90,13 @@ watch(
         </div>
         <div class="flex-1 min-h-0 pb-4 overflow-hidden">
           <List />
+        </div>
+        <div class="p-4">
+          <NSpace>
+            <h3>{{ $t('common.modeDev') }}</h3>
+            <NSwitch v-model:value="active">
+            </NSwitch>
+          </NSpace>
         </div>
         <div class="p-4">
           <NButton block @click="show = true">

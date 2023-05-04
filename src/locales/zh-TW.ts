@@ -26,6 +26,8 @@ export default {
     failed: '操作失敗',
     verify: '驗證',
     unauthorizedTips: '未經授權，請先進行驗證。',
+    modeDev: '开发者模式',
+    modeNormal: '普通模式'
   },
   chat: {
     newChatButton: '新建對話',
