@@ -18,7 +18,6 @@ let controller = new AbortController()
 
 const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
 
-// const route = useRoute()
 const dialog = useDialog()
 
 const chatStore = useChatStore()

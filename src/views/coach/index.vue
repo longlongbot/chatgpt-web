@@ -1,7 +1,6 @@
 <script setup lang='ts'>
 import type { Ref } from 'vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { NAutoComplete, NButton, NInput, useDialog } from 'naive-ui'
 import { useScroll } from '../chat/hooks/useScroll'
@@ -19,7 +18,6 @@ let controller = new AbortController()
 
 const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
 
-// const route = useRoute()
 const dialog = useDialog()
 
 const chatStore = useChatStore()
