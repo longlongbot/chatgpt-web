@@ -11,7 +11,7 @@ const { isMobile } = useBasicLayout()
 const appStore = useAppStore()
 const chatStore = useChatStore()
 
-const dataSources = computed(() => chatStore.history)
+const dataSources = computed(() => chatStore.history.filter(i => +i.uuid > 1050))
 
 async function handleSelect({ uuid }: Chat.History) {
   if (isActive(uuid))
