@@ -19,7 +19,7 @@ let controller = new AbortController()
 
 const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
 
-const route = useRoute()
+// const route = useRoute()
 const dialog = useDialog()
 
 const chatStore = useChatStore()
@@ -31,12 +31,8 @@ const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex } = useChat()
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const { usingContext } = useUsingContext()
 
-let { uuid } = route.params as { uuid: string }
-
-if (!uuid) {
-  uuid = '1029'
-  chatStore.findAndAddHistoryButNotReload({ title: '认知行为型教练', uuid: +uuid, isEdit: false })
-}
+const uuid = '1029'
+chatStore.findAndAddHistoryButNotReload({ title: '认知行为型教练', uuid: +uuid, isEdit: false })
 
 let firstAsk = true
 

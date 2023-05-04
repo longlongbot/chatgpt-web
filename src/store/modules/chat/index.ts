@@ -37,7 +37,7 @@ export const useChatStore = defineStore('chat-store', {
 
     findAndAddHistoryButNotReload(history: Chat.History, chatData: Chat.Chat[] = []) {
       const index = this.history.findIndex(item => item.uuid === history.uuid)
-      if( index === -1){
+      if (index === -1) {
         this.history.unshift(history)
         this.chat.unshift({ uuid: history.uuid, data: chatData })
       }

@@ -1,14 +1,13 @@
 <script setup lang='ts'>
 import type { Ref } from 'vue'
 import { computed, onMounted, onUnmounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { NAutoComplete, NButton, NInput, useDialog } from 'naive-ui'
-import Message from './Message/index.vue'
 import { useScroll } from '../chat/hooks/useScroll'
 import { useChat } from '../chat/hooks/useChat'
 import { useCopyCode } from '../chat/hooks/useCopyCode'
 import { useUsingContext } from '../chat/hooks/useUsingContext'
+import Message from './Message/index.vue'
 import { HoverButton, SvgIcon } from '@/components/common'
 import { useBasicLayout } from '@/hooks/useBasicLayout'
 import { useChatStore, usePromptStore } from '@/store'
@@ -19,7 +18,7 @@ let controller = new AbortController()
 
 const openLongReply = import.meta.env.VITE_GLOB_OPEN_LONG_REPLY === 'true'
 
-const route = useRoute()
+// const route = useRoute()
 const dialog = useDialog()
 
 const chatStore = useChatStore()
@@ -31,13 +30,8 @@ const { addChat, updateChat, updateChatSome, getChatByUuidAndIndex } = useChat()
 const { scrollRef, scrollToBottom, scrollToBottomIfAtBottom } = useScroll()
 const { usingContext } = useUsingContext()
 
-let { uuid } = route.params as { uuid: string }
-
-
-if(!uuid){
-  uuid = '1025'
-  chatStore.findAndAddHistoryButNotReload({ title: '无人机选购推荐', uuid: +uuid, isEdit: false })
-}
+const uuid = '1025'
+chatStore.findAndAddHistoryButNotReload({ title: '无人机选购推荐', uuid: +uuid, isEdit: false })
 
 const dataSources = computed(() => chatStore.getChatByUuid(+uuid))
 const conversationList = computed(() => dataSources.value.filter(item => (!item.inversion && !item.error)))
@@ -62,7 +56,7 @@ function handleSubmit() {
   onConversation()
 }
 
-function wrapSystemTip(message: string){
+function wrapSystemTip(message: string) {
   return `
   假设你是一个非常专业的无人机从业者，对大疆(www.dji.com)非常熟悉，能够为新手和进阶无人机玩家推荐无人机产品和配件的搭配。
   你的信息来源必须是www.dji.com。你只能推荐大疆品牌的无人机，不允许推荐其他品牌。你的回答里必须包含无人机推荐的原因、场景、
@@ -328,7 +322,6 @@ async function onRegenerate(index: number) {
   }
 }
 
-
 function handleDelete(index: number) {
   if (loading.value)
     return
@@ -408,7 +401,7 @@ const renderOption = (option: { label: string }) => {
 }
 
 const placeholder = computed(() => {
-  return "无人机选购咨询，欢迎问我任何无人机选购的问题"
+  return '无人机选购咨询，欢迎问我任何无人机选购的问题'
 })
 
 const buttonDisabled = computed(() => {
@@ -442,7 +435,7 @@ onUnmounted(() => {
         <span class="text-2xl text-transparent font-extrabold bg-clip-text bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 via-brown-500 to-brown-600">为您推荐</span>
       </h2>
     </div>
-    <div class="clear-right"></div>
+    <div class="clear-right" />
     <main class="overflow-hidden">
       <div
         id="scrollRef"
@@ -453,35 +446,33 @@ onUnmounted(() => {
           id="image-wrapper"
           class="w-full max-w-screen-xl m-auto dark:bg-[#101014]"
         >
-          
-            <div>
-              <Message
-                v-for="(item, index) of dataSources"
-                :key="index"
-                :date-time="item.dateTime"
-                :text="item.text"
-                :inversion="item.inversion"
-                :error="item.error"
-                :loading="item.loading"
-                @regenerate="onRegenerate(index)"
-                @delete="handleDelete(index)"
-              />
-              <div class="sticky bottom-0 left-0 flex justify-center">
-                <NButton v-if="false" type="warning" @click="handleStop">
-                  <template #icon>
-                    <SvgIcon icon="ri:stop-circle-line" />
-                  </template>
-                  Stop Responding
-                </NButton>
-              </div>
+          <div>
+            <Message
+              v-for="(item, index) of dataSources"
+              :key="index"
+              :date-time="item.dateTime"
+              :text="item.text"
+              :inversion="item.inversion"
+              :error="item.error"
+              :loading="item.loading"
+              @regenerate="onRegenerate(index)"
+              @delete="handleDelete(index)"
+            />
+            <div class="sticky bottom-0 left-0 flex justify-center">
+              <NButton v-if="false" type="warning" @click="handleStop">
+                <template #icon>
+                  <SvgIcon icon="ri:stop-circle-line" />
+                </template>
+                Stop Responding
+              </NButton>
             </div>
-
+          </div>
         </div>
       </div>
     </main>
     <footer :class="footerClass">
       <div class="w-full max-w-screen-xl m-auto">
-        <div class="flex items-center justify-between space-x-2" v-if="!loading">
+        <div v-if="!loading" class="flex items-center justify-between space-x-2">
           <HoverButton @click="handleClear">
             <span class="text-xl text-[#4f555e] dark:text-white">
               <SvgIcon icon="ri:delete-bin-line" />
