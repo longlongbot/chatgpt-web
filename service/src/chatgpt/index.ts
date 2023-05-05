@@ -121,7 +121,7 @@ async function chatReplyProcess(options: RequestOptions) {
         process?.(partialResponse)
       },
     })
-    // globalThis.console.log(response)
+    globalThis.console.log(response)
     globalThis.console.log(`答：${response.text}`)
     return sendResponse({ type: 'Success', data: response })
   }
