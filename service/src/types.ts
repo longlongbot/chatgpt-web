@@ -4,6 +4,7 @@ export interface RequestProps {
   prompt: string
   options?: ChatContext
   systemMessage: string
+  engine: string
 }
 
 export interface ChatContext {
@@ -29,4 +30,4 @@ export interface ModelConfig {
   balance?: string
 }
 
-export type ApiModel = 'ChatGPTAPI' | 'ChatGPTUnofficialProxyAPI' | undefined
+export type ApiModel = 'ChatGPTAPI' | 'ChatGPTUnofficialProxyAPI' | 'BingChat' | undefined

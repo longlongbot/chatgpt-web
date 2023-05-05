@@ -6,6 +6,7 @@ import { SocksProxyAgent } from 'socks-proxy-agent'
 import httpsProxyAgent from 'https-proxy-agent'
 import fetch from 'node-fetch'
 import axios from 'axios'
+import { BingChat } from 'bing-chat'
 import { sendResponse } from '../utils'
 import { isNotEmptyString } from '../utils/is'
 import type { ApiModel, ChatContext, ChatGPTUnofficialProxyAPIOptions, ModelConfig } from '../types'
@@ -26,56 +27,55 @@ const ErrorCodeMessage: Record<string, string> = {
 
 const timeoutMs: number = !isNaN(+process.env.TIMEOUT_MS) ? +process.env.TIMEOUT_MS : 30 * 1000
 
-let apiModel: ApiModel
+let globalApiModel: ApiModel
 
 if (!isNotEmptyString(process.env.OPENAI_API_KEY) && !isNotEmptyString(process.env.OPENAI_ACCESS_TOKEN))
   throw new Error('Missing OPENAI_API_KEY or OPENAI_ACCESS_TOKEN environment variable')
 
-let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
-
-(async () => {
+const detectAPI = async (engine) => {
   // More Info: https://github.com/transitive-bullshit/chatgpt-api
+  let apiModel: ApiModel
+  let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI | BingChat
+  if (engine === 'ChatGPTAPI') {
+    if (isNotEmptyString(process.env.OPENAI_API_KEY)) {
+      const OPENAI_API_BASE_URL = process.env.OPENAI_API_BASE_URL
+      const OPENAI_API_MODEL = process.env.OPENAI_API_MODEL
+      const model = isNotEmptyString(OPENAI_API_MODEL) ? OPENAI_API_MODEL : 'gpt-3.5-turbo'
 
-  if (isNotEmptyString(process.env.OPENAI_API_KEY)) {
-    const OPENAI_API_BASE_URL = process.env.OPENAI_API_BASE_URL
-    const OPENAI_API_MODEL = process.env.OPENAI_API_MODEL
-    const model = isNotEmptyString(OPENAI_API_MODEL) ? OPENAI_API_MODEL : 'gpt-3.5-turbo'
-
-    const options: ChatGPTAPIOptions = {
-      apiKey: process.env.OPENAI_API_KEY,
-      completionParams: { model },
-      debug: false,
-    }
-
-    // increase max token limit if use gpt-4
-    if (model.toLowerCase().includes('gpt-4')) {
-      // if use 32k model
-      if (model.toLowerCase().includes('32k')) {
-        options.maxModelTokens = 32768
-        options.maxResponseTokens = 8192
+      const options: ChatGPTAPIOptions = {
+        apiKey: process.env.OPENAI_API_KEY,
+        completionParams: { model },
+        debug: false,
       }
-      else {
-        options.maxModelTokens = 8192
-        options.maxResponseTokens = 2048
+
+      // increase max token limit if use gpt-4
+      if (model.toLowerCase().includes('gpt-4')) {
+        // if use 32k model
+        if (model.toLowerCase().includes('32k')) {
+          options.maxModelTokens = 32768
+          options.maxResponseTokens = 8192
+        }
+        else {
+          options.maxModelTokens = 8192
+          options.maxResponseTokens = 2048
+        }
       }
+
+      if (isNotEmptyString(OPENAI_API_BASE_URL))
+        options.apiBaseUrl = `${OPENAI_API_BASE_URL}/v1`
+
+      setupProxy(options)
+
+      api = new ChatGPTAPI({ ...options })
+      apiModel = globalApiModel = 'ChatGPTAPI'
     }
-
-    if (isNotEmptyString(OPENAI_API_BASE_URL))
-      options.apiBaseUrl = `${OPENAI_API_BASE_URL}/v1`
-
-    setupProxy(options)
-
-    api = new ChatGPTAPI({ ...options })
-    apiModel = 'ChatGPTAPI'
   }
-  else {
-    const OPENAI_API_MODEL = process.env.OPENAI_API_MODEL
+
+  if (engine === 'ChatGPTUnofficialProxyAPI' || !engine) {
     const options: ChatGPTUnofficialProxyAPIOptions = {
       accessToken: process.env.OPENAI_ACCESS_TOKEN,
       debug: false,
     }
-    if (isNotEmptyString(OPENAI_API_MODEL))
-      options.model = OPENAI_API_MODEL
 
     if (isNotEmptyString(process.env.API_REVERSE_PROXY))
       options.apiReverseProxyUrl = process.env.API_REVERSE_PROXY
@@ -83,12 +83,22 @@ let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI
     setupProxy(options)
 
     api = new ChatGPTUnofficialProxyAPI({ ...options })
-    apiModel = 'ChatGPTUnofficialProxyAPI'
+    apiModel = globalApiModel = 'ChatGPTUnofficialProxyAPI'
   }
-})()
+
+  if (engine === 'BingChat') {
+    api = new BingChat({ cookie: process.env.BING_COOKIE })
+    apiModel = globalApiModel = 'BingChat'
+  }
+
+  return { api, apiModel }
+}
+
+detectAPI('ChatGPTUnofficialProxyAPI')
 
 async function chatReplyProcess(options: RequestOptions) {
-  const { message, lastContext, process, systemMessage, ip } = options
+  const { message, lastContext, process, systemMessage, ip, engine } = options
+  const { api, apiModel } = await detectAPI(engine)
   try {
     let options: SendMessageOptions = { timeoutMs }
 
@@ -103,19 +113,19 @@ async function chatReplyProcess(options: RequestOptions) {
       else
         options = { ...lastContext }
     }
-    globalThis.console.log(`${ip||'未知的朋友'} 问：${message}`)
+    globalThis.console.log(`${ip || '未知的朋友'} 问：${message}`)
     const response = await api.sendMessage(message, {
       ...options,
       onProgress: (partialResponse) => {
         process?.(partialResponse)
       },
     })
-		globalThis.console.log(`答：${response.text}`)
+    globalThis.console.log(`答：${response.text}`)
     return sendResponse({ type: 'Success', data: response })
   }
   catch (error: any) {
     const code = error.statusCode
-    //global.console.log(error)
+    // global.console.log(error)
     if (Reflect.has(ErrorCodeMessage, code))
       return sendResponse({ type: 'Fail', message: ErrorCodeMessage[code] })
     return sendResponse({ type: 'Fail', message: error.message ?? 'Please check the back-end console' })
@@ -181,7 +191,7 @@ function setupProxy(options: ChatGPTAPIOptions | ChatGPTUnofficialProxyAPIOption
 }
 
 function currentModel(): ApiModel {
-  return apiModel
+  return globalApiModel
 }
 
 export type { ChatContext, ChatMessage }
