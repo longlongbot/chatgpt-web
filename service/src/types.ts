@@ -4,12 +4,12 @@ export interface RequestProps {
   prompt: string
   options?: ChatContext
   systemMessage: string
-  engine: string
 }
 
 export interface ChatContext {
   conversationId?: string
   parentMessageId?: string
+  engine?: string
 }
 
 export interface ChatGPTUnofficialProxyAPIOptions {

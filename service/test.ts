@@ -8,7 +8,7 @@ async function example() {
     cookie: process.env.BING_COOKIE,
   })
 
-  const res = await api.sendMessage('hello')
+  const res = await api.sendMessage('hello', { onProgress: (res) => { console.log(res.text) }})
   // eslint-disable-next-line no-console
   console.log(res.text)
 }
