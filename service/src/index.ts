@@ -23,7 +23,8 @@ router.post('/chat-process', [auth, limiter], async (req, res) => {
   res.setHeader('Content-type', 'application/octet-stream')
 
   try {
-    const { prompt, options = {}, systemMessage, engine } = req.body as RequestProps
+    const { prompt, options = {}, systemMessage } = req.body as RequestProps
+    const { engine } = options
     let firstChunk = true
     await chatReplyProcess({
       ip: req.ip,
