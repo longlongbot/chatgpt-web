@@ -34,6 +34,9 @@ dependencies:
   socks-proxy-agent:
     specifier: ^7.0.0
     version: 7.0.0
+  ws:
+    specifier: ^8.13.0
+    version: 8.13.0
 
 devDependencies:
   '@antfu/eslint-config':
