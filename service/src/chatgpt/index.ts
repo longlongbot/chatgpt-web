@@ -32,7 +32,7 @@ let globalApiModel: ApiModel
 if (!isNotEmptyString(process.env.OPENAI_API_KEY) && !isNotEmptyString(process.env.OPENAI_ACCESS_TOKEN))
   throw new Error('Missing OPENAI_API_KEY or OPENAI_ACCESS_TOKEN environment variable')
 
-const detectAPI = async (engine) => {
+const detectAPI = (engine) => {
   // More Info: https://github.com/transitive-bullshit/chatgpt-api
   let apiModel: ApiModel
   let api: ChatGPTAPI | ChatGPTUnofficialProxyAPI | BingChat
@@ -87,7 +87,9 @@ const detectAPI = async (engine) => {
   }
 
   if (engine === 'BingChat') {
-    api = new BingChat({ cookie: process.env.BING_COOKIE })
+    globalThis.console.log(`detect api:${engine}`)
+    api = new BingChat({ cookie: process.env.BING_COOKIE, debug: true })
+    globalThis.console.log('build a new BingChat done')
     apiModel = 'BingChat'
     globalApiModel = 'BingChat'
   }
@@ -99,7 +101,9 @@ detectAPI('ChatGPTUnofficialProxyAPI')
 
 async function chatReplyProcess(options: RequestOptions) {
   const { message, lastContext, process, systemMessage, ip, engine } = options
-  const { api, apiModel } = await detectAPI(engine)
+  globalThis.console.log('options:')
+  globalThis.console.log(options)
+  const { api, apiModel } = detectAPI(engine)
   try {
     let options: SendMessageOptions = { timeoutMs }
 
@@ -118,16 +122,19 @@ async function chatReplyProcess(options: RequestOptions) {
     const response = await api.sendMessage(message, {
       ...options,
       onProgress: (partialResponse) => {
+        globalThis.console.log('partialResponse:')
+        globalThis.console.log(partialResponse)
         process?.(partialResponse)
       },
     })
+    globalThis.console.log('response:')
     globalThis.console.log(response)
     globalThis.console.log(`答：${response.text}`)
     return sendResponse({ type: 'Success', data: response })
   }
   catch (error: any) {
+    global.console.log(error)
     const code = error.statusCode
-    // global.console.log(error)
     if (Reflect.has(ErrorCodeMessage, code))
       return sendResponse({ type: 'Fail', message: ErrorCodeMessage[code] })
     return sendResponse({ type: 'Fail', message: error.message ?? 'Please check the back-end console' })
