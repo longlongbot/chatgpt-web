@@ -1,10 +1,14 @@
 import express from 'express'
+import { BingChat } from 'bing-chat'
+import * as dotenv from 'dotenv'
 import type { RequestProps } from './types'
 import type { ChatMessage } from './chatgpt'
 import { chatConfig, chatReplyProcess, currentModel } from './chatgpt'
 import { auth } from './middleware/auth'
 import { limiter } from './middleware/limiter'
 import { isNotEmptyString } from './utils/is'
+
+dotenv.config()
 
 const app = express()
 const router = express.Router()
@@ -50,6 +54,22 @@ router.post('/config', auth, async (req, res) => {
   try {
     const response = await chatConfig()
     res.send(response)
+  }
+  catch (error) {
+    res.send(error)
+  }
+})
+
+router.get('/bingchat', async (req, res) => {
+  try {
+    const api = new BingChat({
+      cookie: process.env.BING_COOKIE,
+      debug: true,
+    })
+
+    const { prompt } = req.query
+    const data = await api.sendMessage(`Q:${prompt}\nA:`)
+    res.send(data)
   }
   catch (error) {
     res.send(error)
