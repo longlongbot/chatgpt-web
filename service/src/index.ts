@@ -66,8 +66,11 @@ router.get('/bingchat', async (req, res) => {
       cookie: process.env.BING_COOKIE,
       debug: true,
     })
+    globalThis.console.log(api)
+    globalThis.console.log(process.env.BING_COOKIE)
 
     const { prompt } = req.query
+    globalThis.console.log(prompt)
     const data = await api.sendMessage(`Q:${prompt}\nA:`)
     res.send(data)
   }
