@@ -1,4 +1,4 @@
-import { BingChat } from 'bing-chat'
+import { BingChat } from './src/bing-chat/build/index.js'
 import * as dotenv from 'dotenv'
 
 dotenv.config()
