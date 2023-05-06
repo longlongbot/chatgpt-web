@@ -87,7 +87,6 @@ const detectAPI = (engine) => {
   }
 
   if (engine === 'BingChat') {
-    globalThis.console.log(`detect api:${engine}`)
     api = new BingChat({ cookie: process.env.BING_COOKIE, debug: true })
     apiModel = 'BingChat'
     globalApiModel = 'BingChat'
