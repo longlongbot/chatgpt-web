@@ -89,7 +89,6 @@ const detectAPI = (engine) => {
   if (engine === 'BingChat') {
     globalThis.console.log(`detect api:${engine}`)
     api = new BingChat({ cookie: process.env.BING_COOKIE, debug: true })
-    globalThis.console.log('build a new BingChat done')
     apiModel = 'BingChat'
     globalApiModel = 'BingChat'
   }
@@ -101,8 +100,6 @@ detectAPI('ChatGPTUnofficialProxyAPI')
 
 async function chatReplyProcess(options: RequestOptions) {
   const { message, lastContext, process, systemMessage, ip, engine } = options
-  globalThis.console.log('options:')
-  globalThis.console.log(options)
   const { api, apiModel } = detectAPI(engine)
   try {
     let options: SendMessageOptions = { timeoutMs }
@@ -122,13 +119,9 @@ async function chatReplyProcess(options: RequestOptions) {
     const response = await api.sendMessage(message, {
       ...options,
       onProgress: (partialResponse) => {
-        globalThis.console.log('partialResponse:')
-        globalThis.console.log(partialResponse)
         process?.(partialResponse)
       },
     })
-    globalThis.console.log('response:')
-    globalThis.console.log(response)
     globalThis.console.log(`答：${response.text}`)
     return sendResponse({ type: 'Success', data: response })
   }
