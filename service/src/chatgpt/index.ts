@@ -87,7 +87,7 @@ const detectAPI = (engine) => {
   }
 
   if (engine === 'BingChat') {
-    api = new BingChat({ cookie: process.env.BING_COOKIE, debug: true })
+    api = new BingChat({ cookie: process.env.BING_COOKIE, debug: false })
     apiModel = 'BingChat'
     globalApiModel = 'BingChat'
   }
