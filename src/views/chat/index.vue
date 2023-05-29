@@ -11,9 +11,6 @@ import Conversation from './components/Conversation/index.vue'
       <NTabPane name="ChatGPT" tab="ChatGPT">
         <Conversation engine="" />
       </NTabPane>
-      <NTabPane name="BingChat" tab="BingChat">
-        <Conversation engine="BingChat" />
-      </NTabPane>
       <NTabPane name="Zen" tab="赛博禅宗">
         <Zen />
       </NTabPane>
