@@ -30,6 +30,7 @@ router.post('/chat-process', [auth, limiter], async (req, res) => {
     const { prompt, options = {}, systemMessage } = req.body as RequestProps
     const { engine } = options
     let firstChunk = true
+    globalThis.console.log(`${req.ip || '未知的朋友'} 在 ${req.hostname} 问：${prompt}`)
     await chatReplyProcess({
       ip: req.ip,
       message: prompt,

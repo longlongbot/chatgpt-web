@@ -114,7 +114,7 @@ async function chatReplyProcess(options: RequestOptions) {
       else
         options = { ...lastContext }
     }
-    globalThis.console.log(`${ip || '未知的朋友'} 在 ${apiModel} 问：${message}`)
+    // globalThis.console.log(`${ip || '未知的朋友'} 在 ${apiModel} 问：${message}`)
     const response = await api.sendMessage(message, {
       ...options,
       onProgress: (partialResponse) => {
